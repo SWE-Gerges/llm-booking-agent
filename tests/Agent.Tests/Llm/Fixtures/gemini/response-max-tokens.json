@@ -1,0 +1,20 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "A partial ans"
+          }
+        ]
+      },
+      "finishReason": "MAX_TOKENS",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 10,
+    "candidatesTokenCount": 512
+  }
+}

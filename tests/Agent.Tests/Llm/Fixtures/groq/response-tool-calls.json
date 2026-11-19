@@ -1,0 +1,38 @@
+{
+  "id": "chatcmpl-2",
+  "object": "chat.completion",
+  "model": "test-model",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Let me check.",
+        "tool_calls": [
+          {
+            "id": "call_a1",
+            "type": "function",
+            "function": {
+              "name": "search_flights",
+              "arguments": "{\"origin\":\"AMS\",\"adults\":2}"
+            }
+          },
+          {
+            "id": "call_a2",
+            "type": "function",
+            "function": {
+              "name": "get_booking_status",
+              "arguments": "{}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 120,
+    "completion_tokens": 30,
+    "total_tokens": 150
+  }
+}

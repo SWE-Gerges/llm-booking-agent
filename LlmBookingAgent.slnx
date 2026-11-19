@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Agent.Abstractions/Agent.Abstractions.csproj" />
+    <Project Path="src/Agent.Core/Agent.Core.csproj" />
+    <Project Path="src/Agent.Llm/Agent.Llm.csproj" />
+    <Project Path="src/Agent.Persistence/Agent.Persistence.csproj" />
+    <Project Path="src/Agent.Domains.Shared/Agent.Domains.Shared.csproj" />
+    <Project Path="src/Agent.Domains.Flights/Agent.Domains.Flights.csproj" />
+    <Project Path="src/Agent.Domains.Hotels/Agent.Domains.Hotels.csproj" />
+    <Project Path="src/Agent.Domains.Transfers/Agent.Domains.Transfers.csproj" />
+    <Project Path="src/Agent.Api/Agent.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Agent.Tests/Agent.Tests.csproj" />
+    <Project Path="tests/Agent.IntegrationTests/Agent.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

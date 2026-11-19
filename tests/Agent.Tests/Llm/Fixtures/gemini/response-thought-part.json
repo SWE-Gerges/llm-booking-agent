@@ -1,0 +1,23 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "private reasoning",
+            "thought": true
+          },
+          {
+            "text": "Visible answer"
+          }
+        ]
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 4,
+    "candidatesTokenCount": 3
+  }
+}

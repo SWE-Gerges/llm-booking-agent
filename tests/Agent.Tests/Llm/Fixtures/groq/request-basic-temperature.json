@@ -1,0 +1,81 @@
+{
+  "model": "test-model",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a booking assistant.\n\nToday is 2030-01-02."
+    },
+    {
+      "role": "user",
+      "content": "Find flights from AMS to LIS"
+    }
+  ],
+  "max_completion_tokens": 512,
+  "temperature": 0.2,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_flights",
+        "description": "Search flight offers.",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string",
+              "pattern": "^[A-Za-z]{3}$",
+              "description": "Departure airport code"
+            },
+            "adults": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9
+            },
+            "cabin": {
+              "type": "string",
+              "enum": [
+                "economy",
+                "business"
+              ]
+            },
+            "fares": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 3
+            },
+            "maxPrice": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 100
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "origin"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_booking_status",
+        "description": "Report booking status.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

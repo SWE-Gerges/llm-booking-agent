@@ -1,0 +1,18 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "partial"
+          }
+        ]
+      },
+      "finishReason": "RECITATION"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9
+  }
+}

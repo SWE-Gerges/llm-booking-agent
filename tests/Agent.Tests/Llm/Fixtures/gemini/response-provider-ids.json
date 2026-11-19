@@ -1,0 +1,25 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "id": "fc-77",
+              "name": "search_flights",
+              "args": {
+                "origin": "AMS"
+              }
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 5,
+    "candidatesTokenCount": 2
+  }
+}

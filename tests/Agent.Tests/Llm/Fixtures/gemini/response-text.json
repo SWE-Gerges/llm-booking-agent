@@ -1,0 +1,26 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "Hello "
+          },
+          {
+            "text": "there"
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 25,
+    "candidatesTokenCount": 7,
+    "totalTokenCount": 32
+  },
+  "modelVersion": "test-model",
+  "responseId": "resp-text-1"
+}

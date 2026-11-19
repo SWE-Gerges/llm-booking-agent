@@ -1,0 +1,124 @@
+{
+  "model": "test-model",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a booking assistant.\n\nToday is 2030-01-02."
+    },
+    {
+      "role": "user",
+      "content": "Find flights"
+    },
+    {
+      "role": "assistant",
+      "content": "Searching.",
+      "tool_calls": [
+        {
+          "id": "call-1",
+          "type": "function",
+          "function": {
+            "name": "search_flights",
+            "arguments": "{\"origin\":\"AMS\"}"
+          }
+        },
+        {
+          "id": "call-2",
+          "type": "function",
+          "function": {
+            "name": "get_booking_status",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call-1",
+      "content": "{\"count\":2}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call-2",
+      "content": "{\"error\":\"none\"}"
+    },
+    {
+      "role": "user",
+      "content": "Thanks"
+    },
+    {
+      "role": "assistant",
+      "content": "You are welcome"
+    },
+    {
+      "role": "user",
+      "content": "Cheapest please"
+    }
+  ],
+  "max_completion_tokens": 512,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_flights",
+        "description": "Search flight offers.",
+        "parameters": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string",
+              "pattern": "^[A-Za-z]{3}$",
+              "description": "Departure airport code"
+            },
+            "adults": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9
+            },
+            "cabin": {
+              "type": "string",
+              "enum": [
+                "economy",
+                "business"
+              ]
+            },
+            "fares": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 3
+            },
+            "maxPrice": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 100
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "origin"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_booking_status",
+        "description": "Report booking status.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

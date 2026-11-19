@@ -1,0 +1,17 @@
+{
+  "id": "chatcmpl-4",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "A partial ans"
+      },
+      "finish_reason": "length"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 512
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "chatcmpl-5",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "content_filter"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 9,
+    "completion_tokens": 0
+  }
+}

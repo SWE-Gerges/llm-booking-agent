@@ -1,0 +1,7 @@
+{
+  "error": {
+    "message": "Rate limit reached for model test-model. Please try again in 1.5s.",
+    "type": "tokens",
+    "code": "rate_limit_exceeded"
+  }
+}

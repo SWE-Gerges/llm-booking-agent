@@ -1,0 +1,40 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "Let me check."
+          },
+          {
+            "functionCall": {
+              "name": "search_flights",
+              "args": {
+                "origin": "AMS",
+                "adults": 2
+              }
+            }
+          },
+          {
+            "functionCall": {
+              "name": "get_booking_status",
+              "args": {}
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 120,
+    "cachedContentTokenCount": 80,
+    "candidatesTokenCount": 30,
+    "thoughtsTokenCount": 12,
+    "totalTokenCount": 162
+  },
+  "modelVersion": "test-model",
+  "responseId": "resp-calls-1"
+}
