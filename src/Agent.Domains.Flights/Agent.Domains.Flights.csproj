@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Agent.Domains.Flights</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <ProjectReference Include="..\Agent.Abstractions\Agent.Abstractions.csproj" />
+    <ProjectReference Include="..\Agent.Core\Agent.Core.csproj" />
+    <ProjectReference Include="..\Agent.Domains.Shared\Agent.Domains.Shared.csproj" />
+    <InternalsVisibleTo Include="Agent.Tests" />
+    <InternalsVisibleTo Include="Agent.IntegrationTests" />
+  </ItemGroup>
+</Project>
