@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Agent.Llm</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <ProjectReference Include="..\Agent.Abstractions\Agent.Abstractions.csproj" />
+    <InternalsVisibleTo Include="Agent.Tests" />
+  </ItemGroup>
+</Project>
