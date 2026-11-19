@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Agent.Core</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="JsonSchema.Net" />
+    <ProjectReference Include="..\Agent.Abstractions\Agent.Abstractions.csproj" />
+    <InternalsVisibleTo Include="Agent.Tests" />
+  </ItemGroup>
+</Project>
