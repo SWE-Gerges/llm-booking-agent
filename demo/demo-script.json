@@ -1,0 +1,68 @@
+{
+  "steps": [
+    { "toolUse": { "name": "search_flights", "input": { "origin": "AMS", "destination": "LIS", "departureDate": "{{today+30}}" } } },
+    { "text": "I found {{search_flights.count}} flights. The cheapest is {{search_flights.offers[0].id}} at {{search_flights.offers[0].price.amount}} {{search_flights.offers[0].price.currency}}. You did not say how many travellers, so I assumed 1 adult; tell me if that is wrong." },
+
+    { "toolUse": { "name": "recheck_flight_price", "input": { "offerId": "{{search_flights.offers[0].id}}" } } },
+    { "text": "I re-checked the price with the supplier: the total is {{recheck_flight_price.total.amount}} {{recheck_flight_price.total.currency}}." },
+
+    { "toolUse": { "name": "collect_passenger_details", "input": {} } },
+    { "text": "Please fill in the passenger details form. I never take passport or personal details in chat." },
+
+    { "toolUse": { "name": "submit_flight_booking", "input": {} } },
+    { "text": "Your flight booking {{submit_flight_booking.bookingId}} is created with status {{submit_flight_booking.status}}. Complete the payment on the secure payment page." },
+
+    { "toolUse": { "name": "get_booking_status", "input": { "bookingId": "{{submit_flight_booking.bookingId}}" } } },
+    { "text": "Booking status: {{get_booking_status.bookings[0].status}}." },
+
+    { "toolUse": { "name": "search_hotels", "input": { "destination": "Lisbon", "checkIn": "{{today+30}}", "checkOut": "{{today+33}}", "adults": 2, "rooms": 1 } } },
+    { "text": "I found {{search_hotels.count}} hotels. The cheapest is {{search_hotels.hotels[0].name}} ({{search_hotels.hotels[0].id}})." },
+
+    { "toolUse": { "name": "get_hotel_rooms", "input": { "hotelId": "{{search_hotels.hotels[0].id}}" } } },
+    { "text": "Here are the room types and rates with their cancellation policies." },
+
+    { "toolUse": { "name": "prebook_room", "input": { "hotelId": "{{search_hotels.hotels[0].id}}", "roomId": "{{get_hotel_rooms.rooms[0].roomId}}", "rateId": "{{get_hotel_rooms.rooms[0].rates[0].rateId}}" } } },
+    { "text": "The room is pre-booked at {{prebook_room.total.amount}} {{prebook_room.total.currency}} in total." },
+
+    { "toolUse": { "name": "collect_guest_details", "input": {} } },
+    { "text": "Please fill in the guest details form." },
+
+    { "toolUse": { "name": "submit_hotel_booking", "input": {} } },
+    { "text": "Your hotel booking {{submit_hotel_booking.bookingId}} is created with status {{submit_hotel_booking.status}}." },
+
+    { "toolUse": { "name": "search_flights", "input": { "origin": "AMS", "destination": "LIS", "departureDate": "{{today+40}}", "returnDate": "{{today+43}}", "adults": 2 } } },
+    { "text": "For the trip I found {{search_flights.count}} return flights for 2 travellers. The cheapest is {{search_flights.offers[0].id}}." },
+
+    { "toolUse": { "name": "recheck_flight_price", "input": { "offerId": "{{search_flights.offers[0].id}}" } } },
+    { "toolUse": { "name": "add_to_trip", "input": { "service": "flight" } } },
+    { "text": "The flight is confirmed at {{recheck_flight_price.total.amount}} {{recheck_flight_price.total.currency}} and added to your trip." },
+
+    { "toolUse": { "name": "search_hotels", "input": { "destination": "Lisbon", "checkIn": "{{today+40}}", "checkOut": "{{today+43}}", "adults": 2, "rooms": 1 } } },
+    { "text": "I found {{search_hotels.count}} hotels for the trip. The cheapest is {{search_hotels.hotels[0].name}}." },
+
+    { "toolUse": { "name": "get_hotel_rooms", "input": { "hotelId": "{{search_hotels.hotels[0].id}}" } } },
+    { "toolUse": { "name": "prebook_room", "input": { "hotelId": "{{search_hotels.hotels[0].id}}", "roomId": "{{get_hotel_rooms.rooms[0].roomId}}", "rateId": "{{get_hotel_rooms.rooms[0].rates[0].rateId}}" } } },
+    { "toolUse": { "name": "add_to_trip", "input": { "service": "hotel" } } },
+    { "text": "The room is pre-booked at {{prebook_room.total.amount}} {{prebook_room.total.currency}} and added to your trip." },
+
+    { "toolUse": { "name": "search_transfers", "input": { "pickup": "LIS", "dropoff": "Lisbon city centre", "date": "{{today+40}}", "time": "10:30", "passengers": 2 } } },
+    { "text": "I found {{search_transfers.count}} airport transfers for 2 passengers." },
+
+    { "toolUse": { "name": "select_transfer", "input": { "offerId": "{{search_transfers.offers[0].id}}" } } },
+    { "toolUse": { "name": "add_to_trip", "input": { "service": "transfer" } } },
+    { "text": "The transfer is selected at {{select_transfer.total.amount}} {{select_transfer.total.currency}} and added to your trip." },
+
+    { "toolUse": { "name": "view_trip", "input": {} } },
+    { "text": "Your trip total is {{view_trip.total.amount}} {{view_trip.total.currency}} for {{view_trip.travellers}} travellers." },
+
+    { "toolUse": { "name": "collect_trip_details", "input": {} } },
+    { "text": "Please fill in the one trip form for all travellers. It covers the flight, the hotel and the transfer." },
+
+    { "toolUse": { "name": "submit_trip_booking", "input": {} } },
+    { "toolUse": { "name": "get_booking_status", "input": { "bookingId": "{{submit_trip_booking.bookingId}}" } } },
+    { "text": "Trip booking {{submit_trip_booking.bookingId}} is {{get_booking_status.bookings[0].status}}. One payment covers the flight, the hotel and the transfer." },
+
+    { "toolUse": { "name": "escalate_to_human", "input": { "reason": "The user asked to speak to a person.", "summary": "Demo conversation: flight and hotel booked." } } },
+    { "text": "I have passed your conversation to a human agent who will follow up." }
+  ]
+}

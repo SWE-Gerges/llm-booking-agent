@@ -1,0 +1,257 @@
+# VS Code REST Client walkthrough. Start the API first: dotnet run --project src/Agent.Api -- --environment Development --urls http://localhost:5101
+# The demo runs the scripted model, so each message advances the script one turn; send them in order, once.
+# Expected status codes are noted above each request.
+
+@baseUrl = http://localhost:5101
+@clientKey = dev-client-key-0123456789
+
+### Liveness (200)
+GET {{baseUrl}}/health/live
+
+### Readiness: checks Postgres and Redis (200)
+GET {{baseUrl}}/health/ready
+
+### OpenAPI document (200)
+GET {{baseUrl}}/openapi/v1.json
+
+### Countries used by the forms (200)
+GET {{baseUrl}}/api/v1/lookups/countries
+
+### Registered tools, integrator key required (200; 401 without X-Client-Key)
+GET {{baseUrl}}/api/v1/tools
+X-Client-Key: {{clientKey}}
+
+### Start a session: returns a signed session token (201; 401 bad key; 422 bad locale; 429 rate limited)
+# @name start
+POST {{baseUrl}}/api/v1/chat/start
+X-Client-Key: {{clientKey}}
+Content-Type: application/json
+X-Correlation-Id: demo-walkthrough-1
+
+{ "locale": "en" }
+
+###
+@token = {{start.response.body.$.sessionToken}}
+
+### Flights: the first turn searches (200). The reply carries the raw tool output in structuredData.
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Find me flights from AMS to LIS next month" }
+
+### Re-check the live price of the cheapest offer (200)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Please confirm the price of the cheapest one" }
+
+### Ask to book: the assistant shows the passenger form instead of asking in chat (200, state passenger_form)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Great, book it" }
+
+### Passenger form goes to a non-LLM endpoint (200 with payment methods; 422 with per-field errors)
+POST {{baseUrl}}/api/v1/chat/forms/passenger
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "passengers": [
+    {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "dateOfBirth": "1990-05-01",
+      "gender": "female",
+      "nationality": "NL",
+      "passportNumber": "P1234567",
+      "passportExpiry": "2040-01-01"
+    }
+  ],
+  "contact": { "email": "user@example.com", "phone": "+15555550100" }
+}
+
+### Complete the booking: price and passengers come from the server, not from the model (200, state booking_created)
+# @name flightBooking
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Yes, complete the booking" }
+
+###
+@flightBookingId = {{flightBooking.response.body.$.structuredData[0].data.bookingId}}
+
+### Ask for the status through the assistant (200)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "What is the status of my booking?" }
+
+### Booking status endpoint: only bookings of this session (200; 404 for unknown or foreign ids)
+GET {{baseUrl}}/api/v1/bookings/{{flightBookingId}}/status
+Authorization: Bearer {{token}}
+
+### Hotels: search (200)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Now I need a hotel in Lisbon for three nights" }
+
+### Rooms and rates with cancellation policies (200)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Show me the rooms of the cheapest hotel" }
+
+### Pre-book the first rate to lock the live price (200)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Take the first room" }
+
+### Ask to book: guest form is shown (200, state guest_form)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Book it" }
+
+### Guest form (200 with payment methods; 422 with per-field errors)
+POST {{baseUrl}}/api/v1/chat/forms/guest
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leadGuest": { "firstName": "Jane", "lastName": "Doe", "nationality": "NL" },
+  "contact": { "email": "user@example.com", "phone": "+15555550100" },
+  "specialRequests": "High floor please"
+}
+
+### Complete the hotel booking (200, state booking_created)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Complete the hotel booking" }
+
+### Trip: search return flights for two travellers (200, state flight_results)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Now plan a combined trip for two: flights first" }
+
+### Trip: re-check the flight price and add it to the trip basket (200, state trip)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Confirm the cheapest flight and add it to the trip" }
+
+### Trip: hotel search (200)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Now the hotel for the trip" }
+
+### Trip: pre-book the first room and add it (200, state trip)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Add the cheapest room to the trip" }
+
+### Trip: airport transfer search (200, state transfer_results)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "And a transfer from the airport" }
+
+### Trip: select the first transfer and add it (200, state trip)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Take the first transfer and add it" }
+
+### Trip: show the basket with the combined total (200, state trip)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Show me my trip" }
+
+### Trip: ask for the one combined traveller form (200, state trip_form)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Collect the traveller details" }
+
+### Trip form: one form for every service, each traveller entered once (200 with payment methods; 422 per-field errors or duplicate traveller)
+POST {{baseUrl}}/api/v1/chat/forms/trip
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "travellers": [
+    { "firstName": "Jane", "lastName": "Doe", "dateOfBirth": "1990-05-01", "gender": "female", "nationality": "NL", "passportNumber": "P1234567", "passportExpiry": "2040-01-01" },
+    { "firstName": "John", "lastName": "Doe", "dateOfBirth": "1988-03-12", "gender": "male", "nationality": "NL", "passportNumber": "P7654321", "passportExpiry": "2041-02-02" }
+  ],
+  "contact": { "email": "user@example.com", "phone": "+15555550100" },
+  "specialRequests": "Quiet seats please"
+}
+
+### Trip: one booking, one payment for flight, hotel and transfer (200, structuredData[0].state booking_created)
+# @name tripBooking
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "Complete the trip booking" }
+
+###
+@tripBookingId = {{tripBooking.response.body.$.structuredData[0].data.bookingId}}
+
+### Trip booking status (200, service "trip")
+GET {{baseUrl}}/api/v1/bookings/{{tripBookingId}}/status
+Authorization: Bearer {{token}}
+
+### Hand over to a person: writes an escalation request and an audit row (200, state escalated)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "I want to talk to a person" }
+
+### Visible conversation, oldest first (200)
+GET {{baseUrl}}/api/v1/chat/history?limit=50
+Authorization: Bearer {{token}}
+
+### Card numbers are never accepted in chat: answered by a guard without the model (200, state guarded)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "my card number is 4111 1111 1111 1111" }
+
+### A rejected message: empty text (422)
+POST {{baseUrl}}/api/v1/chat/message
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "message": "" }
+
+### End the session and erase its data (204; later calls with this token return 404)
+DELETE {{baseUrl}}/api/v1/chat/session
+Authorization: Bearer {{token}}

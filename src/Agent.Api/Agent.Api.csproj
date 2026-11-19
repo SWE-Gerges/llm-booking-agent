@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>Agent.Api</RootNamespace>
+    <UserSecretsId />
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <ProjectReference Include="..\Agent.Abstractions\Agent.Abstractions.csproj" />
+    <ProjectReference Include="..\Agent.Core\Agent.Core.csproj" />
+    <ProjectReference Include="..\Agent.Llm\Agent.Llm.csproj" />
+    <ProjectReference Include="..\Agent.Persistence\Agent.Persistence.csproj" />
+    <ProjectReference Include="..\Agent.Domains.Shared\Agent.Domains.Shared.csproj" />
+    <ProjectReference Include="..\Agent.Domains.Flights\Agent.Domains.Flights.csproj" />
+    <ProjectReference Include="..\Agent.Domains.Hotels\Agent.Domains.Hotels.csproj" />
+    <ProjectReference Include="..\Agent.Domains.Transfers\Agent.Domains.Transfers.csproj" />
+    <InternalsVisibleTo Include="Agent.IntegrationTests" />
+    <InternalsVisibleTo Include="Agent.Tests" />
+  </ItemGroup>
+</Project>
