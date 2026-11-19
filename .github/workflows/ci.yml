@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build (warnings are errors)
+        run: dotnet build --no-restore -c Release -warnaserror
+
+      - name: Unit tests
+        run: dotnet test tests/Agent.Tests --no-build -c Release
+
+      - name: API tests (through WebApplicationFactory)
+        run: dotnet test tests/Agent.IntegrationTests --no-build -c Release
+
+      - name: OpenAPI snapshot is current
+        run: |
+          dotnet test tests/Agent.IntegrationTests --no-build -c Release --filter "FullyQualifiedName~OpenApiSnapshot"
+          git diff --exit-code -- docs/openapi.json
+
