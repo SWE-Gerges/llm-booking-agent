@@ -379,8 +379,7 @@ Other choices worth knowing:
 - Signing keys are read at startup, so a rotation needs a restart. There is no token revocation list; deleting the
   session is the revocation.
 - A trip holds at most three services in one currency. The guards and prompts cover English and Arabic only.
-- The CI workflow has not been run on a GitHub runner; it contains the same commands that
-  were run locally.
+- The CI workflow runs on GitHub Actions (`ubuntu-latest`) for every push to `main` and every pull request, and passed on its first run. It starts no Postgres or Redis, so those paths stay unverified there too.
 - No load or performance measurements exist, so none are claimed.
 
 ## Roadmap
